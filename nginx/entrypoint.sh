@@ -294,6 +294,20 @@ cat << EOF >> /tmp/nginx.conf
       proxy_read_timeout 180s;
     }
 
+    location /eventsource {
+      include uwsgi_params;
+      uwsgi_pass eventsource-botbot-backend;
+      uwsgi_buffering off;
+      chunked_transfer_encoding off;
+      proxy_cache off;
+      access_log  /var/log/nginx/eventsource_botbot.access.log;
+      error_page 504 =200 @eventsource-close-graceful;
+    }
+
+    location @eventsource-close-graceful {
+      add_header Content-Type text/event-stream;
+      return 200;
+    }
     # For docker registry support, will support injecting this stuff...
     # TODO: Support injecting or bind mounting this config:
     location /_ping {
