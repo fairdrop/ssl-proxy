@@ -250,7 +250,6 @@ EOF
 fi
 
 cat << EOF >> /tmp/nginx.conf
-
       # add_header Strict-Transport-Security max-age=17968000 always;
       proxy_pass http://upstream;
       proxy_http_version 1.1;
@@ -260,7 +259,14 @@ cat << EOF >> /tmp/nginx.conf
       proxy_set_header X-Forwarded-Port \$server_port;
       proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
       proxy_set_header Upgrade \$http_upgrade;
-      proxy_set_header Connection \$connection_upgrade;
+      #proxy_set_header Connection \$connection_upgrade;
+      
+      ## Adjustments to get event-stream to work
+      proxy_set_header Connection '';
+      chunked_transfer_encoding off;
+      proxy_buffering off;
+      proxy_cache off;
+
       ## Socket Headers
       proxy_set_header Sec-Websocket-Key        \$http_sec_websocket_key;
       proxy_set_header Sec-Websocket-Version    \$http_sec_websocket_version;
