@@ -276,28 +276,13 @@ cat << EOF >> /tmp/nginx.conf
 
 EOF
 # Check if we need to be low latency
-if [ "$LOW_LATENCY" != "" -o "$LATENCY" == "low"  ]; then
-  cat << EOF >> /tmp/nginx.conf
-      proxy_buffering off;
-      proxy_buffer_size 4k;
-EOF
-else
-  cat << EOF >> /tmp/nginx.conf
-      # Recommended: Generalized defaults - Tested on greylog & rancher 2017-01-11 ?
-      proxy_buffering on;
-      proxy_buffer_size 2k;
-      proxy_buffers 16 4k;
-      proxy_busy_buffers_size 8k;
-      proxy_temp_file_write_size 128k;
-      # proxy_max_temp_file_size 2m; # remove?
-EOF
-fi
+
 
 cat << EOF >> /tmp/nginx.conf
       # proxy_intercept_errors off;
       # This allows the ability for the execute long connections (e.g. a web-based shell window)
       # Without this parameter, the default is 1 minute and will automatically close.
-      proxy_read_timeout 180s;
+      proxy_read_timeout 24h;
     }
 
     location /eventsource {
